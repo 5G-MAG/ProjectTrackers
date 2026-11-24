@@ -1,0 +1,80 @@
+# Where the code of each function is, for the cards of the boards. Read by publish.py when it writes a task card, and published next to README.md.
+# Every fact here comes from this repository's README tables and recipes, or from the public pages of the 5G-MAG Website (5G Broadcast, Emergency Alerts, RTC,
+# MBS). No repository was read to write it. A function that is not listed has no repository known on that board.
+
+repos:
+  rt-5gms-application-function: {role: 5GMS Application Function, build: 'C, meson', tests: "ABTS tests in `tests/msaf/`, built as `test-msaf` and registered in meson only when the open5gs subproject builds tests; the recipe found no documented command to run them and CI runs no unit tests; the first card documents the command it used"}
+  rt-5gms-application-server: {role: 5GMS Application Server, build: 'Python, pyproject', tests: "none: no unit-test framework (the recipe says so); `tests/` is a manual M3 client that drives a running AS. The first card adds the first automated test (for Python, pytest) and documents the command"}
+  rt-5gms-media-session-handler: {role: Android Media Session Handler, build: 'Kotlin, Gradle', tests: "JUnit 4; the only unit test is a placeholder; no documented command to run one (the recipe); the first card replaces it with real tests and documents the command"}
+  rt-5gms-media-stream-handler: {role: Android Media Stream Handler (player side), build: 'Kotlin, Gradle', tests: "JUnit 4 with MockK and Robolectric in `app/src/test/`; see the recipe for what runs"}
+  rt-5gms-common-android-library: {role: Shared Android library, build: 'Kotlin, Gradle', tests: "JUnit 4, 10 plain JVM tests in `app/src/test/`; no documented command to run them (the recipe)"}
+  rt-5gms-application: {role: 5GMS-aware Android application, build: 'Kotlin, Gradle', tests: "JUnit 4: `./gradlew test` from `fivegmag_5GMSdAwareApplication/` (the recipe)"}
+  rt-5gms-application-provider: {role: 5GMS Application Provider, build: 'Python, Docker', tests: "no unit tests; one pytest integration test in `management-ui/tests/` that needs a running UI and AF"}
+  rt-5gms-examples: {role: Docker set-up and an Express mock AF, build: 'JavaScript, Docker', tests: "none; the examples are exercise runs"}
+  rt-mbs-function: {role: MBS Function (with the MBS Application Function), build: 'C++, meson', tests: "none runs today: the README names `meson test -C build regression` but no such suite is registered (both `test()` lines in `tests/meson.build` are commented out); the first card registers real tests in meson and documents the command"}
+  rt-mbs-transport-function: {role: MBS Transport Function, build: 'C++, meson', tests: "`meson test -C build --suite rt-mbs-transport-function` (README); hand-written executables, no framework"}
+  rt-libflute: {role: FLUTE library, build: 'C++, CMake', tests: "GoogleTest: `ctest --test-dir build/tests -R '^unit:' --output-on-failure` (CI)"}
+  rt-mbs-examples: {role: 'Docker set-up, mock media server, scripts to exercise a feature', build: 'Shell, Docker', tests: "API tests against running functions: `pytest -v -s test_mbsf_crud.py` from `test/` (the recipe)"}
+  rt-mbs-client: {role: MBS client, private: true}
+  rt-mbs-application: {role: MBS-aware application, private: true}
+  rt-mbs-application-provider: {role: MBS Application Provider, private: true}
+  open5gs: {role: 'Reference 5G core (AMF, SMF, UPF, NEF, PCF, and the MB-SMF and MB-UPF)', build: 'C, meson', tests: '`tests/`'}
+  srsRAN_Project_mbs: {role: gNB with MBS, build: 'C++, CMake', private: true}
+  srsRAN_4G_mbs: {role: UE with MBS, build: 'C++, CMake, CTest', private: true}
+  rt-5gc-service-consumers: {role: 'Libraries towards 5G core functions (used by the AF)', build: see its README}
+  rt-3gpp-swap: {role: 'SWAP reference implementation: a Node.js signalling server and a client library', build: see its README}
+  rt-mbms-tx: {role: 'LTE-based 5G Broadcast transmitter (srsRAN-based eNodeB with FeMBMS); no M2 interface and no MCE', build: see its README}
+  rt-mbms-tx-for-qrd-and-crd: {role: 'Transmitter for Qualcomm reference devices (legacy mixed cell); also the eNodeB of Emergency Alerts', build: see its README}
+  rt-mbms-gw: {role: MBMS gateway (Sm sender, M1-U), build: see its README}
+  rt-mbms-bmsc: {role: BM-SC (no SGmb interface), build: see its README}
+  rt-mbms-modem: {role: 'Receiver modem: I/Q samples to multicast IP packets', build: see its README}
+  rt-mbms-client: {role: 'MBMS client: FLUTE reassembly, service announcement, HTTP', build: see its README}
+  rt-mbms-application: {role: 'Monitoring application; also the PWS client of Emergency Alerts', build: see its README}
+  rt-mbms-application-provider: {role: 'Application provider: xMB-C client and SBc-AP origination', build: see its README}
+  rt-mbms-examples: {role: Examples for 5G Broadcast, build: see its README}
+  rt-pws-cbc: {role: 'Cell Broadcast Centre: warnings in, SBc-AP towards the MME', build: see its README}
+
+# board slug -> functions. A group with `function:` is one function that the specifications name in several ways (the task cards use that name); a group without it lists functions that stand alone but share repositories. A function name is matched without case; every name that a card can show is listed here, or has no repository known.
+boards:
+  5gms:
+    exercise: 'rt-5gms-examples (its recipe says what it covers: a Docker set-up and an Express mock AF). A peer that the examples do not cover is a mock that you write; say in the pull request what each mock stands for.'
+    functions:
+      - {names: [AF], repos: [rt-5gms-application-function]}
+      - {names: [AS], repos: [rt-5gms-application-server]}
+      - {function: Media Session Handler, names: [Media Session Handler, MSH], repos: [rt-5gms-media-session-handler, rt-5gms-common-android-library]}
+      - {function: Media Stream Handler, names: [Media Stream Handler, Media Player, Media Streamer, 5GMSd Client, 5GMSu Client, 5GMS Client, Media Client, Media Access Client, Media Access Function],
+         repos: [rt-5gms-media-stream-handler, rt-5gms-common-android-library]}
+      - {function: 5GMS-Aware Application, names: [5GMSd-Aware Application, 5GMSu-Aware Application, 5GMS-Aware Application, Media-aware Application], repos: [rt-5gms-application]}
+      - {function: Application Provider, names: [5GMS Application Provider, 5GMSd Application Provider, 5GMSu Application Provider, Media Application Provider, Application Provider, Application Service Provider],
+         repos: [rt-5gms-application-provider]}
+      - {names: [PCF, NEF, BSF], repos: [open5gs, rt-5gc-service-consumers]}
+  mbs:
+    exercise: 'rt-mbs-examples (its recipe: an Open5GS MB-SMF, an MBS-enhanced AMF and an srsRAN gNB, a mock media server and scripts). A peer that it does not cover is a mock that you write; say in the pull request what each mock stands for.'
+    functions:
+      - {names: [MBSF, MBS Function, AF], repos: [rt-mbs-function]}
+      - {names: [MBSTF], repos: [rt-mbs-transport-function]}
+      - {function: MBS Client, names: [MBS Client, MBSTF Client, MBSF Client, MBMS Client], repos: [rt-mbs-client]}
+      - {function: MBS-Aware Application, names: [MBS Application, MBS-Aware Application, Individual MBS Application], repos: [rt-mbs-application]}
+      - {names: [MBS Application Provider], repos: [rt-mbs-application-provider]}
+      - {names: [MBSMF, SMF, AMF, UPF, UP Function, NEF, PCF, NRF, BSF, UDM, UDR, NF, NF/NEF], repos: [open5gs]}
+      - {names: [NG-RAN, N2 Message Handler], repos: [srsRAN_Project_mbs]}
+      - {function: UE, names: [UE, User equipment], repos: [srsRAN_4G_mbs]}
+    features:
+      - {match: FLUTE, repos: [rt-libflute]}
+  5g-broadcast:
+    exercise: 'rt-mbms-examples for TV and radio services; for Emergency Alerts, rt-pws-cbc towards a transmitter (the MME has no repository: mock it). A peer without a repository is a mock that you write; say in the pull request what each mock stands for.'
+    functions:
+      - {function: E-UTRAN (eNodeB), names: [E-UTRAN, Evolved Universal Terrestrial Radio Access Network, eNB], repos: [rt-mbms-tx, rt-mbms-tx-for-qrd-and-crd]}
+      - {function: BM-SC, names: [BM-SC, BMSC], repos: [rt-mbms-bmsc]}
+      - {function: MBMS-GW, names: [MBMS-GW, MBMS GW, MBMS Gateway], repos: [rt-mbms-gw]}
+      - {function: UE (MBMS receiver), names: [UE, MBMS Receiver], repos: [rt-mbms-modem]}
+      - {function: MBMS Client, names: [MBMS Client, MBMS URL Handler, MBMS-URL Handler, MBMS Session Handling Function], repos: [rt-mbms-client]}
+      - {function: MBMS-Aware Application, names: [MBMS Application, MBMS-Aware Application, MBMS Aware Application], repos: [rt-mbms-application]}
+      - {names: [Content Provider], repos: [rt-mbms-application-provider]}
+      - {function: Cell Broadcast Centre (CBC), names: [CBC, PWS, Warning Notification Provider], repos: [rt-pws-cbc]}
+    features:
+      - {match: FLUTE, repos: [rt-libflute]}
+  rtc:
+    exercise: 'No reference peer exists yet for RTC: the only repository is rt-3gpp-swap (the SWAP signalling server and client library). Exercise a flow against mocks that you write and say in the pull request what each mock stands for.'
+    functions:
+      - {function: WebRTC Signalling Function, names: [WebRTC Signalling Function, SWAP server], repos: [rt-3gpp-swap]}
