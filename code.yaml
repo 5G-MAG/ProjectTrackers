@@ -78,5 +78,5 @@ boards:
     exercise: 'No reference peer exists yet for RTC: the only repository is rt-3gpp-swap (the SWAP signalling server and client library). Exercise a flow against mocks that you write and say in the pull request what each mock stands for.'
     functions:
       - {function: WebRTC Signalling Function, names: [WebRTC Signalling Function, SWAP server], repos: [rt-3gpp-swap]}
-      - {function: RTC Media Session Handler, names: [RTC Media Session Handler, Media Session Handler, Media Session Handler (MSH), MSH], repos: []}
-      - {function: RTC Application Provider, names: [RTC Application Provider, Media Application Provider, Application Provider], repos: []}
+      - {function: RTC Media Session Handler, names: [RTC Media Session Handler, RTC MSH, Media Session Handler, Media Session Handler (MSH), MSH], repos: []}
+      - {function: RTC Application Provider, names: [RTC Application Provider, Media Application Provider, Application Provider, RTC application provider], repos: []}
