@@ -63,6 +63,8 @@ Evidence is the file and line (or the test) in a public 5G-MAG repository. For a
 
 - **lead-in**: a sentence that ends with a colon and only introduces the cases under it. It has no test of its own and is not ticked.
 - **describes**: the specification states behaviour as a fact. Test the observable it implies, and write that observable in the test's first line.
+- **note**: a NOTE of the specification. It is informative: read it, it may explain a case, but it is not ticked and has no test. (A NOTE that contains a `shall` is a case of that level.)
+- **conditional**: a table row whose presence is conditional (C). It is required when the condition in its description or NOTE holds: test both the case where it holds and the case where it does not.
 - **may**: optional. Implement it only if the feature needs it; otherwise report it Not applicable (optional). A `may` case counts as needed when the feature cannot work without it (for example the operation an API exists to offer): then it is built and tested like a `shall`. It counts as ticked and never stops a card from reaching Supported. A `may` case you do implement has a test like any other.
 - **Function column**: the function the sentence names (blank: it names none, so it falls on the function of the card by its clause, unless it reads as a peer's duty). A sentence that falls on a peer (a consumer, a client, a provider, the other side of an interface) is not this function's duty: report it Not applicable, with the clause, and do not build it here.
 
