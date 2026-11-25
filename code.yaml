@@ -1,4 +1,3 @@
-# A repository marked private: true cannot be opened without access to the 5G-MAG organisation (checked against GitHub 2026-11-25); its card says so.
 # Where the code of each function is, for the cards of the boards. Read by publish.py when it writes a task card, and published next to README.md.
 # Every fact here comes from this repository's README tables and recipes, or from the public pages of the 5G-MAG Website (5G Broadcast, Emergency Alerts, RTC,
 # MBS). No repository was read to write it. A function that is not listed has no repository known on that board.
@@ -23,17 +22,17 @@ repos:
   srsRAN_Project_mbs: {role: gNB with MBS, build: 'C++, CMake', private: true}
   srsRAN_4G_mbs: {role: UE with MBS, build: 'C++, CMake, CTest', private: true}
   rt-5gc-service-consumers: {role: 'Libraries towards 5G core functions (used by the AF)', build: see its README}
-  rt-3gpp-swap: {role: 'SWAP reference implementation: a Node.js signalling server and a client library', build: see its README, private: true}
+  rt-3gpp-swap: {role: 'SWAP reference implementation: a Node.js signalling server and a client library', build: see its README}
   rt-mbms-tx: {role: 'LTE-based 5G Broadcast transmitter (srsRAN-based eNodeB with FeMBMS); no M2 interface and no MCE', build: see its README}
   rt-mbms-tx-for-qrd-and-crd: {role: 'Transmitter for Qualcomm reference devices (legacy mixed cell); also the eNodeB of Emergency Alerts', build: see its README}
-  rt-mbms-gw: {role: MBMS gateway (Sm sender, M1-U), build: see its README, private: true}
-  rt-mbms-bmsc: {role: BM-SC (no SGmb interface), build: see its README, private: true}
+  rt-mbms-gw: {role: MBMS gateway (Sm sender, M1-U), build: see its README}
+  rt-mbms-bmsc: {role: BM-SC (no SGmb interface), build: see its README}
   rt-mbms-modem: {role: 'Receiver modem: I/Q samples to multicast IP packets', build: see its README}
-  rt-mbms-client: {role: 'MBMS client: FLUTE reassembly, service announcement, HTTP', build: see its README, private: true}
-  rt-mbms-application: {role: 'Monitoring application; also the PWS client of Emergency Alerts', build: see its README, private: true}
-  rt-mbms-application-provider: {role: 'Application provider: xMB-C client and SBc-AP origination', build: see its README, private: true}
+  rt-mbms-client: {role: 'MBMS client: FLUTE reassembly, service announcement, HTTP', build: see its README}
+  rt-mbms-application: {role: 'Monitoring application; also the PWS client of Emergency Alerts', build: see its README}
+  rt-mbms-application-provider: {role: 'Application provider: xMB-C client and SBc-AP origination', build: see its README}
   rt-mbms-examples: {role: Examples for 5G Broadcast, build: see its README}
-  rt-pws-cbc: {role: 'Cell Broadcast Centre: warnings in, SBc-AP towards the MME', build: see its README, private: true}
+  rt-pws-cbc: {role: 'Cell Broadcast Centre: warnings in, SBc-AP towards the MME', build: see its README}
 
 # board slug -> functions. A group with `function:` is one function that the specifications name in several ways (the task cards use that name); a group without it lists functions that stand alone but share repositories. A function name is matched without case; every name that a card can show is listed here, or has no repository known.
 boards:
