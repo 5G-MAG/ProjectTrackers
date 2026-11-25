@@ -7,7 +7,9 @@ Agents of several people move the cards on the 5G-MAG boards. People can follow 
 
 Read a card with `gh issue view <number> -R 5G-MAG/ProjectTrackers --json title,body,labels,state,assignees` (the plain form can fail on some versions of `gh`). Where the code is, and how to install the toolkit, is in [README.md](README.md#where-the-code-is-and-how-to-build-and-test-it).
 
-**Reading needs no account.** Every card is public: `https://api.github.com/repos/5G-MAG/ProjectTrackers/issues/<number>` gives it as JSON (the `body` is the whole card, the `labels` say the board and the release); the open tasks of a board are `https://api.github.com/repos/5G-MAG/ProjectTrackers/issues?labels=project:5gms,type:task&state=open&assignee=none&per_page=100` (the labels `project:5gms`, `project:5g-mbs`, `project:5g-broadcast` and `project:rtc` name the boards; add `&page=2` for more); these files are at `https://raw.githubusercontent.com/5G-MAG/ProjectTrackers/main/<file>`; the boards open in a browser. Assigning a card to yourself, commenting on it and moving it on the board may need an account that a 5G-MAG maintainer has given access (the repository limits who can create issues, and only members with write access change a board). If you cannot, do the work in the code repository, link the card in the pull request, and ask a maintainer to move it.
+**Reading needs no account.** Every card is public: `https://api.github.com/repos/5G-MAG/ProjectTrackers/issues/<number>` gives it as JSON (the `body` is the whole card, the `labels` say the board and the release); the open tasks of a board are `https://api.github.com/repos/5G-MAG/ProjectTrackers/issues?labels=project:5gms,type:task&state=open&assignee=none&per_page=100` (the labels `project:5gms`, `project:5g-mbs`, `project:5g-broadcast` and `project:rtc` name the boards; add `&page=2` for more); these files are at `https://raw.githubusercontent.com/5G-MAG/ProjectTrackers/main/<file>`; the boards open in a browser. Assigning a card to yourself, commenting on it and moving it on the board may need an account that a 5G-MAG maintainer has given access (the repository limits who can create issues, and only members with write access change a board). If you cannot, do the work in the code repository, link the card in the pull request, put the audit report in the description of that pull request, and ask a maintainer to copy it to the card and move the card. Two things to know when you read: the field `status` that the issue API shows (Backlog on every open issue) is GitHub's own default and is not the board Status, which is only on the board page; and anonymous API calls are limited to 60 an hour, so read one card at a time and fetch files from `raw.githubusercontent.com`.
+
+**The toolkit and the repositories are not all public.** The 3gpp-toolkit (`3gpp-clause`, `3gpp-implement`, `3gpp-verify`) lives in the private 5G-MAG repository Standards2Deployments, and some code repositories are private (a card says `(private)` next to them). Where you cannot open one, read the clause in the specification itself (each card links the public 3GPP archive of its specifications), and ask a maintainer to run `3gpp-verify --strict` on your pull request.
 
 Everything is drawn from the specifications alone (through the 3gpp-toolkit) and starts as Not audited. The board column (Status) says where a task stands; the field Introduced in says the release its cases came with, so "what is new in Rel-19" is a filter.
 
@@ -28,7 +30,7 @@ Everything is drawn from the specifications alone (through the 3gpp-toolkit) and
 
 1. Pick a task with the Status Not audited and no assignee. Take the feature or function you were asked to work on. Claim it (see Claims below) with the comment `auditing`. If someone else is already assigned, pick another task.
 2. Read the clause at the pinned version with the command in the issue. The sentences in the table are quotes, not the whole clause.
-3. Find the code of the component in the repositories listed under [Where the code is](README.md#where-the-code-is), at the head of `main`. Judge each case:
+3. Find the code of the component in the repositories listed under [Where the code is](README.md#where-the-code-is-and-how-to-build-and-test-it), at the head of `main`. Judge each case:
    - **Implemented**: the code does what the case says.
    - **Differs from the specification**: the code does something, and it is not what the case says.
    - **Absent**: nothing in the code does it.
@@ -61,15 +63,15 @@ Evidence is the file and line (or the test) in a public 5G-MAG repository. For a
 
 - **lead-in**: a sentence that ends with a colon and only introduces the cases under it. It has no test of its own and is not ticked.
 - **describes**: the specification states behaviour as a fact. Test the observable it implies, and write that observable in the test's first line.
-- **may**: optional. Implement it only if the feature needs it; otherwise report it Not applicable (optional). It counts as ticked and never stops a card from reaching Supported. A `may` case you do implement has a test like any other.
-- **Function column**: the function the sentence names. A sentence that falls on a peer (a consumer, a client, a provider, the other side of an interface) is not this function's duty: report it Not applicable, with the clause, and do not build it here.
+- **may**: optional. Implement it only if the feature needs it; otherwise report it Not applicable (optional). A `may` case counts as needed when the feature cannot work without it (for example the operation an API exists to offer): then it is built and tested like a `shall`. It counts as ticked and never stops a card from reaching Supported. A `may` case you do implement has a test like any other.
+- **Function column**: the function the sentence names (blank: it names none, so it falls on the function of the card by its clause, unless it reads as a peer's duty). A sentence that falls on a peer (a consumer, a client, a provider, the other side of an interface) is not this function's duty: report it Not applicable, with the clause, and do not build it here.
 
 ## Tests are required
 
 Every case that asks for behaviour (`shall`, `should`, a `may` you implement, and the observable of a `describes` case) is covered by an automated test that carries the case id in its name. A card is not done without those tests, and they pass in the pull request.
 
-- Write the test first: watch it fail for the right reason (the behaviour is missing, not the setup), then implement until it passes.
-- If the repository has no test framework, adding the smallest one that fits its language, with one documented command that runs it, is part of the first card that touches the repository. Say so in the pull request and put the command in the repository's README. Do not wait for another card, and do not skip the tests because the repository has none.
+- Write the test first: watch it fail for the right reason (the behaviour is missing, not the setup), then implement until it passes. Put the case id in the test name in the style of the language, for example `test_<id>_<what it checks>` (Python), `it('<id>: <what it checks>')` (JavaScript) or `fun test_<id>_<what_it_checks>()` (Kotlin); a verifier finds the test by that id.
+- If the repository has no test framework, adding the smallest one that fits its language, with one documented command that runs it, is part of the first card that is claimed for the repository. Other cards of that repository build on its pull request (or wait for it) and do not add a second framework. Say so in the pull request and put the command in the repository's README. Do not wait for another card, and do not skip the tests because the repository has none.
 - The one exception is a case that cannot be tested automatically (it needs a device, a radio or a person). The pull request then says why, gives the manual steps and their result, and the verifier repeats them.
 - A card that only adds tests for behaviour that already exists is valid work and moves like any other.
 - The verifier runs the tests itself on the base and the head commit (see Cross-check); a case without a test is not ticked.
@@ -79,8 +81,8 @@ Every case that asks for behaviour (`shall`, `should`, a `may` you implement, an
 1. Pick a task with the Status Backlog, no assignee, and not On hold. Claim it (see Claims below), set the Status to In progress. If someone else is already assigned, pick another task. The first assignee keeps it.
 2. Read the whole issue and the audit report. Implement each case that is Absent or Differs, in the repository named in the audit report, with one test per case (see Tests are required above; where the repository has no test framework, adding one is part of this card).
 3. Exercise the feature as the issue says (the flow of the clause, between the function and its peers, against the reference implementations or mocks) and attach the log and the messages exchanged to the pull request.
-4. Open the pull request, link the issue, quote each clause as `Basis: <specification> <version> clause <x.y.z>: "<sentence>"`, name the test that covers each case, run `3gpp-verify --commits <base>..HEAD --strict`, and set the Status to In review.
-5. When it is merged, set the Status to Verifying. The pull request goes against the branch the recipe of the repository names under Conventions for contributors (for most 5G-MAG repositories `development`); the audit reads `main`.
+4. Open the pull request (one in each repository when the cases fall in several; each links the issue), quote each clause as `Basis: <specification> <version> clause <x.y.z>: "<sentence>"`, name the test that covers each case, run `3gpp-verify --commits <base>..HEAD --strict`, and set the Status to In review.
+5. When it is merged (all of them, when there are several), set the Status to Verifying. The pull request goes against the branch the recipe of the repository names under Conventions for contributors (for most 5G-MAG repositories `development`); the audit reads `main`.
 
 ## Claims
 
